@@ -16,14 +16,15 @@ slack_events_adapter = SlackEventAdapter(
 slack_web_client = WebClient(token=os.environ['BOT_USER_ACCESS_TOKEN'])
 
 
+def _post_message(message):
+    slack_web_client.chat_postMessage(**message)
+
+rick_bot = RickBot(_post_message)
+
+
 @slack_events_adapter.on("message")
 def message(payload):
-
-    def _post_message(message):
-        print(message)
-        slack_web_client.chat_postMessage(**message)
-
-    RickBot(_post_message).respond_to_message(payload)
+    rick_bot.respond_to_message(payload)
 
 
 if __name__ == "__main__":
@@ -31,4 +32,4 @@ if __name__ == "__main__":
     logger.setLevel(logging.DEBUG)
     logger.addHandler(logging.StreamHandler())
     ssl_context = ssl_lib.create_default_context(cafile=certifi.where())
-    app.run(port=3000)
+    app.run(host="0.0.0.0", port=3000)
