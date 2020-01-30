@@ -29,7 +29,7 @@ pattern_and_message_tuples = [
 
 
 class RickBot(Bot):
-    def __init__(self, post_message: Callable[[OutboundMessagePayload], None], 
+    def __init__(self, post_message: Callable[[OutboundMessagePayload], None],
                  sleep_after_response: Seconds = Seconds(5.0)):
         super().__init__()
         self._post_message = post_message
@@ -40,7 +40,8 @@ class RickBot(Bot):
              self._make_message_response_function("Who dis?"))
         ]
         self._condition_and_callback_tuples += [
-            (RegexMatchCondition(re.compile(_pattern)), self._make_message_response_function(_msg)) 
+            (RegexMatchCondition(re.compile(_pattern)),
+             self._make_message_response_function(_msg))
             for _pattern, _msg in pattern_and_message_tuples
         ]
         self._last_action_time = None
@@ -66,8 +67,8 @@ class RickBot(Bot):
 
     def _is_waiting_period(self):
         return self._last_action_time is not None and \
-               time.time() - self._last_action_time < self._sleep_after_action
-    
+            time.time() - self._last_action_time < self._sleep_after_action
+
     def _update_action_time(self):
         self._last_action_time = time.time()
 

@@ -19,6 +19,7 @@ slack_web_client = WebClient(token=os.environ['BOT_USER_ACCESS_TOKEN'])
 def _post_message(message):
     slack_web_client.chat_postMessage(**message)
 
+
 rick_bot = RickBot(_post_message)
 
 
