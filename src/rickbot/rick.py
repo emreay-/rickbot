@@ -1,5 +1,6 @@
 import re
 import time
+import random
 from functools import wraps
 from typing import Callable, List, Tuple, NewType
 
@@ -25,6 +26,18 @@ pattern_and_message_tuples = [
     ("happy", "Wubba Lubba Dub Dub!"),
     ("great", "Wubba Lubba Dub Dub!"),
     ("exciting", "Wubba Lubba Dub Dub!"),
+    ("repair", "It's time for some hands-on engine repair. All right, Morty, hold on to something."),
+    ("society", "It's society! They work for each other, Morty. They pay each other, they buy houses, they get married and make children that replace them when they get too old to make power."),
+    ("extra steps", "Ooh-la-la, someone's gonna get laid in college"),
+    ("pickle", "I turned myself into a pickle, Morty! Boom! Big reveal! I'm a pickle! What do you think about that? I turned myself into a pickle! W-what are you just staring at me for, bro? I turned myself into a pickle, Morty.")
+]
+
+responses_for_broadcast_messages = [
+    "Who dis?",
+    "So I wouldn't have to come here... Because I don't respect therapy. Because I'm a scientist. Because I invent, transform, create, and destroy for a living, and when I don't like something about the world, I change it. And I don't think going to a rented office in a strip mall to listen to some agent of averageness explain which words mean which feelings has ever helped anyone do anything. I think it's helped a lot of people get comfortable and stop panicking, which is a state of mind [belch] we value in the animals we eat, but not something I want for myself. I'm not a cow. I'm a pickle. When I feel like it. So... you asked.",
+    "Huh. Well, here's the problem right here. We've got a bunch of Froopy Land procedural carbons all gummed up and mixed in with real human DNA.",
+    "Hey, Bloom, it's Rick. What the hell's going on here?",
+    "All right, all right, cool it! I see what's happening here. You're both young, you're both unsure about your place in the universe, and you both want to be Grandpa's favorite. I can fix this. Morty, sit here. Summer, you sit here. Now, listen—I know the two of you are very different from each other in a lot of ways, but you have to understand that as far as Grandpa's concerned, you're both pieces of sh*t! Yeah. I can prove it mathematically. Actually, l-l-let me grab my whiteboard. This has been a long time coming, anyways."
 ]
 
 
@@ -37,22 +50,22 @@ class RickBot(Bot):
 
         self._condition_and_callback_tuples: List[Tuple[ConditionFunction, CallbackFunction]] = [
             (OnAnyBroadcastCommandCondition(),
-             self._make_message_response_function("Who dis?"))
+             self._make_message_response_function(responses_for_broadcast_messages))
         ]
         self._condition_and_callback_tuples += [
             (RegexMatchCondition(re.compile(_pattern)),
-             self._make_message_response_function(_msg))
+             self._make_message_response_function([_msg]))
             for _pattern, _msg in pattern_and_message_tuples
         ]
         self._last_action_time = None
 
-    def _make_message_response_function(self, message: str) -> CallbackFunction:
+    def _make_message_response_function(self, messages: List[str]) -> CallbackFunction:
         def _on_satisfied_condition(payload: InboundMessagePayload):
             self._post_message(
                 OutboundMessagePayloadBuilder(
                     channel=get_channel_from_inbound_payload(payload),
                     user_id=get_user_id_from_inbound_payload(payload)
-                ).add_block(BlockType.Section, text=message).build()
+                ).add_block(BlockType.Section, text=random.choice(messages)).build()
             )
         return _on_satisfied_condition
 
