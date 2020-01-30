@@ -30,7 +30,7 @@ def message(payload):
 
 if __name__ == "__main__":
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     logger.addHandler(logging.StreamHandler())
     ssl_context = ssl_lib.create_default_context(cafile=certifi.where())
     app.run(host="0.0.0.0", port=3000)
